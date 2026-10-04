@@ -131,7 +131,7 @@ public struct OnboardingView: View {
                         .font(.subheadline)
                         .fontWeight(.medium)
 
-                    Text(isDefaultEmailApp ? "Safari, Chrome ve Slack linkleri otomatik olarak MacMail'e yönlendirilecek." : "Linklerin MacMail ile yakalanabilmesi için varsayılan yapılması gerekir.")
+                    Text(isDefaultEmailApp ? "Safari, Chrome ve Slack linkleri otomatik olarak MacMail'e yönlendirilecek." : "MacMail'i tek tıkla doğrudan varsayılan yapabilir veya Apple Mail ayarlarından inceleyebilirsiniz.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -140,7 +140,7 @@ public struct OnboardingView: View {
 
                 if !isDefaultEmailApp {
                     Button("Varsayılan Yap") {
-                        openSystemSettings()
+                        makeDefault()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.regular)
@@ -311,19 +311,14 @@ public struct OnboardingView: View {
 
     // MARK: - Helpers
     private func checkDefaultAppStatus() {
-        guard let mailtoURL = URL(string: "mailto:") else { return }
-        if let defaultAppURL = NSWorkspace.shared.urlForApplication(toOpen: mailtoURL),
-           let bundle = Bundle(url: defaultAppURL),
-           bundle.bundleIdentifier == "com.atalayhuryasar.macmail" {
-            isDefaultEmailApp = true
-        } else {
-            isDefaultEmailApp = false
-        }
+        isDefaultEmailApp = DefaultMailAppManager.isMacMailDefault
     }
 
-    private func openSystemSettings() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.DefaultApps-Settings.extension") {
-            NSWorkspace.shared.open(url)
+    private func makeDefault() {
+        DefaultMailAppManager.setMacMailAsDefault()
+        DefaultMailAppManager.openMailAppSettings()
+        withAnimation {
+            isDefaultEmailApp = DefaultMailAppManager.isMacMailDefault
         }
     }
 

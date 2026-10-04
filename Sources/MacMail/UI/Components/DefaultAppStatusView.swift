@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import MacMailCore
 
 public struct DefaultAppStatusView: View {
     @State private var isDefaultEmailApp: Bool = true
@@ -17,17 +18,17 @@ public struct DefaultAppStatusView: View {
                     Text("MacMail is not your default email app")
                         .font(.subheadline)
                         .fontWeight(.medium)
-                    Text("Set MacMail as the default in System Settings to route clicked links.")
+                    Text("Set MacMail as the default in Apple Mail settings to route clicked links.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
 
                 Spacer()
 
-                Button("Open Settings") {
-                    openSystemSettings()
+                Button("Set as Default") {
+                    makeDefault()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
                 .controlSize(.small)
             }
             .padding(10)
@@ -45,19 +46,14 @@ public struct DefaultAppStatusView: View {
     }
 
     private func checkDefaultAppStatus() {
-        guard let mailtoURL = URL(string: "mailto:") else { return }
-        if let defaultAppURL = NSWorkspace.shared.urlForApplication(toOpen: mailtoURL),
-           let bundle = Bundle(url: defaultAppURL),
-           bundle.bundleIdentifier == "com.atalayhuryasar.macmail" {
-            isDefaultEmailApp = true
-        } else {
-            isDefaultEmailApp = false
-        }
+        isDefaultEmailApp = DefaultMailAppManager.isMacMailDefault
     }
 
-    private func openSystemSettings() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.DefaultApps-Settings.extension") {
-            NSWorkspace.shared.open(url)
+    private func makeDefault() {
+        DefaultMailAppManager.setMacMailAsDefault()
+        DefaultMailAppManager.openMailAppSettings()
+        withAnimation {
+            isDefaultEmailApp = DefaultMailAppManager.isMacMailDefault
         }
     }
 }
