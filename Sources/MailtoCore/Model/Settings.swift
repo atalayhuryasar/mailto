@@ -8,6 +8,7 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
         static let alternativeTarget = "alternativeTarget"
         static let rules = "rules"
         static let hasCompletedOnboarding = "hasCompletedOnboarding"
+        static let automaticallyCheckForUpdates = "automaticallyCheckForUpdates"
     }
 
     @Published public var primaryTarget: EmailTarget {
@@ -23,6 +24,10 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
     }
 
     @Published public var hasCompletedOnboarding: Bool {
+        didSet { save() }
+    }
+
+    @Published public var automaticallyCheckForUpdates: Bool {
         didSet { save() }
     }
 
@@ -55,6 +60,13 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
 
         // Load hasCompletedOnboarding
         self.hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
+
+        // Load automaticallyCheckForUpdates (defaults to true)
+        if defaults.object(forKey: Keys.automaticallyCheckForUpdates) != nil {
+            self.automaticallyCheckForUpdates = defaults.bool(forKey: Keys.automaticallyCheckForUpdates)
+        } else {
+            self.automaticallyCheckForUpdates = true
+        }
     }
 
     public func save() {
@@ -68,5 +80,6 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
             defaults.set(data, forKey: Keys.rules)
         }
         defaults.set(hasCompletedOnboarding, forKey: Keys.hasCompletedOnboarding)
+        defaults.set(automaticallyCheckForUpdates, forKey: Keys.automaticallyCheckForUpdates)
     }
 }

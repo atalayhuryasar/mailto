@@ -1,3 +1,3 @@
 import Foundation
 
-public let MailtoCoreVersion = "1.1.0"
+public let MailtoCoreVersion = "1.2.0"
