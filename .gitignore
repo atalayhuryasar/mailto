@@ -1,7 +1,17 @@
+# Swift Package Manager & Build Artifacts
 .build/
 .swiftpm/
-*.xcodeproj/
-DerivedData/
-.DS_Store
-.superpowers/
 build/
+DerivedData/
+*.xcodeproj/
+
+# macOS System Files
+.DS_Store
+*.swp
+*~
+
+# Internal Workspace & Task Progress (Kept locally, excluded from public repo)
+PLAN.md
+_refs/
+.superpowers/
+docs/superpowers/

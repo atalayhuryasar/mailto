@@ -3,7 +3,10 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-ICON_SRC="$ROOT_DIR/_refs/icon.png"
+ICON_SRC="$ROOT_DIR/Resources/AppIcon.png"
+if [ ! -f "$ICON_SRC" ]; then
+    ICON_SRC="$ROOT_DIR/_refs/icon.png"
+fi
 ICONSET_DIR="$ROOT_DIR/build/AppIcon.iconset"
 
 mkdir -p "$ICONSET_DIR"
