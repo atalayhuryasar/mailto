@@ -22,6 +22,19 @@ public final class AppLocationManager: @unchecked Sendable {
         try fileManager.copyItem(at: sourceURL, to: destinationURL)
     }
 
+    /// Installs the app bundle from source to destination. If `cleanSource` is true,
+    /// moves the source bundle to Trash (falling back to removal if trash is unavailable).
+    public func installApp(from sourceURL: URL, to destinationURL: URL, cleanSource: Bool = false) throws {
+        try copyAppBundle(from: sourceURL, to: destinationURL)
+        if cleanSource {
+            do {
+                try fileManager.trashItem(at: sourceURL, resultingItemURL: nil)
+            } catch {
+                try? fileManager.removeItem(at: sourceURL)
+            }
+        }
+    }
+
     /// Strips the macOS Gatekeeper quarantine extended attribute from the application bundle.
     public func stripQuarantine(at url: URL) {
         let process = Process()
@@ -49,11 +62,14 @@ public final class AppLocationManager: @unchecked Sendable {
 
     /// Checks the current running location against /Applications and prompts the user if needed.
     /// Returns true if an action or alert was presented, false otherwise.
+    public typealias InstallPromptHandler = @MainActor (_ sourceURL: URL, _ destinationURL: URL) -> Bool
+
     @MainActor
     @discardableResult
     public func promptAndHandleIfNeeded(
         detector: AppLocationDetector = .default(),
-        sourceURL: URL? = nil
+        sourceURL: URL? = nil,
+        customInstallPrompter: InstallPromptHandler? = nil
     ) -> Bool {
         let runningSource = sourceURL ?? detector.runningBundleURL
         let status = detector.evaluate()
@@ -63,6 +79,10 @@ public final class AppLocationManager: @unchecked Sendable {
             return false
 
         case .notInstalled(let destinationURL):
+            if let customPrompter = customInstallPrompter {
+                return customPrompter(runningSource, destinationURL)
+            }
+
             let alert = NSAlert()
             alert.messageText = "Move to Applications folder?"
             alert.informativeText = "mailto: works best when located in your Applications folder. Moving it keeps your installation safe and ensures email routing always works properly."
@@ -73,7 +93,7 @@ public final class AppLocationManager: @unchecked Sendable {
             let response = alert.centered().runModal()
             if response == .alertFirstButtonReturn {
                 do {
-                    try copyAppBundle(from: runningSource, to: destinationURL)
+                    try installApp(from: runningSource, to: destinationURL, cleanSource: true)
                     stripQuarantine(at: destinationURL)
                     relaunchAndTerminate(at: destinationURL)
                     return true

@@ -51,7 +51,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     public func handleWindowOpened() {
         // Check installation location and prompt user if needed (e.g. AppTranslocation or duplicate install)
-        if AppLocationManager().promptAndHandleIfNeeded() {
+        if AppLocationManager().promptAndHandleIfNeeded(customInstallPrompter: { sourceURL, destinationURL in
+            return AppInstallPresenter.showPrompt(sourceURL: sourceURL, destinationURL: destinationURL)
+        }) {
             return
         }
 
