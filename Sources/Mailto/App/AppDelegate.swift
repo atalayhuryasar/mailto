@@ -95,12 +95,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             existing.makeKeyAndOrderFront(nil)
         }
 
+        #if !APPSTORE
         // Check for updates in background if enabled
         if settings.automaticallyCheckForUpdates {
             Task {
                 await checkSilentlyForUpdates()
             }
         }
+        #endif
     }
 
     public func openSettingsWindow() {
@@ -128,6 +130,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         aboutItem.target = self
         appMenu.addItem(aboutItem)
 
+        #if !APPSTORE
         let checkUpdatesItem = NSMenuItem(
             title: "Check for Updates...",
             action: #selector(handleCheckForUpdatesMenu),
@@ -135,6 +138,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         )
         checkUpdatesItem.target = self
         appMenu.addItem(checkUpdatesItem)
+        #endif
 
         appMenu.addItem(NSMenuItem.separator())
 
@@ -260,6 +264,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         ])
     }
 
+    #if !APPSTORE
     @objc public func handleCheckForUpdatesMenu() {
         Task {
             do {
@@ -293,6 +298,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
+    #endif
 
     @objc public func handleOpenHelpMenu() {
         if let url = URL(string: "https://mailto.huryasar.com") {
@@ -304,6 +310,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         openSettingsWindow()
     }
 
+    #if !APPSTORE
     private func checkSilentlyForUpdates() async {
         do {
             let result = try await UpdateChecker().checkForUpdates(currentVersion: MailtoCoreVersion)
@@ -401,4 +408,5 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
+    #endif
 }

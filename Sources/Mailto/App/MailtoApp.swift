@@ -7,6 +7,7 @@ struct MailtoApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var didSkipInstall: Bool = false
 
+#if !APPSTORE
     private var installStatus: InstallationStatus {
         AppLocationDetector.default().evaluate()
     }
@@ -32,10 +33,12 @@ struct MailtoApp: App {
                 ?? URL(fileURLWithPath: "/Applications/mailto.app")
         }
     }
+#endif
 
     var body: some Scene {
         Window("mailto:", id: "settings") {
             Group {
+                #if !APPSTORE
                 if shouldPromptInstall {
                     AppInstallPromptView(
                         sourceURL: AppLocationDetector.default().runningBundleURL,
@@ -55,6 +58,15 @@ struct MailtoApp: App {
                             appDelegate.handleWindowClosed()
                         }
                 }
+                #else
+                RootView(settings: appDelegate.settings)
+                    .onAppear {
+                        appDelegate.handleWindowOpened()
+                    }
+                    .onDisappear {
+                        appDelegate.handleWindowClosed()
+                    }
+                #endif
             }
             .onOpenURL { url in
                 appDelegate.handleMailto(url: url)
@@ -67,9 +79,11 @@ struct MailtoApp: App {
                 Button("About mailto:") {
                     appDelegate.handleAboutMenu()
                 }
+                #if !APPSTORE
                 Button("Check for Updates...") {
                     appDelegate.handleCheckForUpdatesMenu()
                 }
+                #endif
             }
             CommandGroup(replacing: .appSettings) {
                 Button("Settings...") {
