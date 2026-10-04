@@ -58,8 +58,14 @@ When you click an email link in Slack, Chrome, Safari, or Notion, macOS stubborn
 
 ## 📥 Installation
 
-### Option 1: Mac App Store *(Coming Soon)*
-`mailto:` is currently being prepared for the Mac App Store. Check back soon for the 1-click App Store install.
+### Option 1: Homebrew (Recommended) 🍺
+Install with a single command via Homebrew:
+
+```bash
+brew install --cask atalayhuryasar/tap/mailto
+```
+
+*(Or tap the repository first: `brew tap atalayhuryasar/tap && brew install --cask mailto`)*
 
 ### Option 2: Pre-built Binary
 1. Download the latest `mailto.zip` from [GitHub Releases](https://github.com/atalayhuryasar/mailto/releases).
@@ -71,7 +77,10 @@ When you click an email link in Slack, Chrome, Safari, or Notion, macOS stubborn
 > - Go to **System Settings > Privacy & Security**, scroll down to the **Security** section, and click **Open Anyway**.
 > - *(Alternatively, run `xattr -cr /Applications/Mailto.app` in Terminal to instantly bypass the quarantine flag).*
 
-### Option 3: Build from Source
+### Option 3: Mac App Store *(Coming Soon)*
+`mailto:` is currently being prepared for the Mac App Store. Check back soon for the 1-click App Store install.
+
+### Option 4: Build from Source
 Requirements: macOS 14.0+, Xcode 16+ or Swift 6.0+ toolchain.
 
 ```bash
