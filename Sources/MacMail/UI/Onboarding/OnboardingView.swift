@@ -131,7 +131,7 @@ public struct OnboardingView: View {
                         .font(.subheadline)
                         .fontWeight(.medium)
 
-                    Text(isDefaultEmailApp ? "Safari, Chrome ve Slack linkleri otomatik olarak MacMail'e yönlendirilecek." : "MacMail'i tek tıkla doğrudan varsayılan yapabilir veya Apple Mail ayarlarından inceleyebilirsiniz.")
+                    Text(isDefaultEmailApp ? "Safari, Chrome ve Slack linkleri otomatik olarak MacMail'e yönlendirilecek." : "MacMail'i tek tıkla doğrudan ve sessizce varsayılan yapabilirsiniz.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -316,7 +316,6 @@ public struct OnboardingView: View {
 
     private func makeDefault() {
         DefaultMailAppManager.setMacMailAsDefault()
-        DefaultMailAppManager.openMailAppSettings()
         withAnimation {
             isDefaultEmailApp = DefaultMailAppManager.isMacMailDefault
         }

@@ -18,7 +18,7 @@ public struct DefaultAppStatusView: View {
                     Text("MacMail is not your default email app")
                         .font(.subheadline)
                         .fontWeight(.medium)
-                    Text("Set MacMail as the default in Apple Mail settings to route clicked links.")
+                    Text("Click 'Set as Default' to route clicked mailto: links automatically.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -51,7 +51,6 @@ public struct DefaultAppStatusView: View {
 
     private func makeDefault() {
         DefaultMailAppManager.setMacMailAsDefault()
-        DefaultMailAppManager.openMailAppSettings()
         withAnimation {
             isDefaultEmailApp = DefaultMailAppManager.isMacMailDefault
         }
