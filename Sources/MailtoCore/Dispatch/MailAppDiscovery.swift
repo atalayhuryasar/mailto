@@ -15,7 +15,7 @@ public struct InstalledMailApp: Identifiable, Equatable, Hashable, Sendable {
 }
 
 public struct MailAppDiscovery {
-    public static func findInstalledMailApps(excludingBundleId: String? = "com.atalayhuryasar.macmail") -> [InstalledMailApp] {
+    public static func findInstalledMailApps(excludingBundleId: String? = "com.atalayhuryasar.mailto") -> [InstalledMailApp] {
         guard let mailtoURL = URL(string: "mailto:") else { return [] }
         let appURLs = NSWorkspace.shared.urlsForApplications(toOpen: mailtoURL)
 
