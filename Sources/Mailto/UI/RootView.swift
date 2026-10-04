@@ -28,7 +28,7 @@ public struct RootView: View {
                 mainContent
             }
         }
-        .frame(width: 560, height: showOnboarding ? 360 : 410)
+        .frame(width: 560, height: showOnboarding ? 360 : 320)
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear {
             if !settings.hasCompletedOnboarding {
