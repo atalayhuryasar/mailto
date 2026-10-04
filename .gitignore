@@ -12,6 +12,8 @@ DerivedData/
 
 # Internal Workspace, Dev Scripts & Asset Sources (Kept locally)
 PLAN.md
+ROADMAP_LOCAL.md
+*.local.md
 _refs/
 AppIcons/
 .superpowers/
