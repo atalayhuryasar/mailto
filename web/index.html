@@ -442,10 +442,12 @@
                 <span class="dot green"></span>
                 <span class="term-title">zsh</span>
               </div>
-              <pre class="terminal-code"><code><span class="t-cmd">brew</span> install --cask atalayhuryasar/tap/mailto</code></pre>
-              <button class="tab-copy-btn" data-copy="brew install --cask atalayhuryasar/tap/mailto" aria-label="Copy command">Copy</button>
+              <pre class="terminal-code"><code><span class="t-cmd">brew</span> tap atalayhuryasar/tap
+<span class="t-cmd">brew</span> trust atalayhuryasar/tap
+<span class="t-cmd">brew</span> install --cask mailto</code></pre>
+              <button class="tab-copy-btn" data-copy="brew tap atalayhuryasar/tap && brew trust atalayhuryasar/tap && brew install --cask mailto" aria-label="Copy command">Copy</button>
             </div>
-            <p class="tab-note">✓ Requires no security approvals. Ready to use immediately!</p>
+            <p class="tab-note">✓ Automated installation directly to /Applications.</p>
           </div>
 
           <!-- Tab Content 2: Direct Download -->

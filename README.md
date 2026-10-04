@@ -59,13 +59,13 @@ When you click an email link in Slack, Chrome, Safari, or Notion, macOS stubborn
 ## 📥 Installation
 
 ### Option 1: Homebrew (Recommended) 🍺
-Install with a single command via Homebrew:
-
 ```bash
-brew install --cask atalayhuryasar/tap/mailto
+brew tap atalayhuryasar/tap
+brew trust atalayhuryasar/tap
+brew install --cask mailto
 ```
 
-*(Or tap the repository first: `brew tap atalayhuryasar/tap && brew install --cask mailto`)*
+> **Note on Homebrew Security (`brew trust`):** Homebrew requires explicit trust confirmation for non-official third-party taps before loading casks (`brew trust atalayhuryasar/tap`).
 
 ### Option 2: Pre-built Binary
 1. Download the latest `mailto.zip` from [GitHub Releases](https://github.com/atalayhuryasar/mailto/releases).
