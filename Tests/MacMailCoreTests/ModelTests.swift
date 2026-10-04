@@ -25,6 +25,7 @@ import Foundation
     #expect(settings.primaryTarget == .nativeApp(bundleId: "com.apple.mail", name: "Mail"))
     #expect(settings.alternativeTarget == .clipboard)
     #expect(settings.rules.isEmpty)
+    #expect(settings.hasCompletedOnboarding == false)
 }
 
 @Test func testSettingsPersistence() {
@@ -42,10 +43,12 @@ import Foundation
     )
     settings.rules = [newRule]
     settings.primaryTarget = .webmail(provider: .fastmail)
+    settings.hasCompletedOnboarding = true
     settings.save()
 
     let reloadedSettings = SettingsStore(defaults: defaults)
     #expect(reloadedSettings.rules.count == 1)
     #expect(reloadedSettings.rules[0] == newRule)
     #expect(reloadedSettings.primaryTarget == .webmail(provider: .fastmail))
+    #expect(reloadedSettings.hasCompletedOnboarding == true)
 }

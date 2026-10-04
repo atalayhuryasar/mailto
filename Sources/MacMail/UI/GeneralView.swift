@@ -3,9 +3,11 @@ import MacMailCore
 
 public struct GeneralView: View {
     @ObservedObject public var settings: SettingsStore
+    public var onRestartOnboarding: (() -> Void)?
 
-    public init(settings: SettingsStore) {
+    public init(settings: SettingsStore, onRestartOnboarding: (() -> Void)? = nil) {
         self.settings = settings
+        self.onRestartOnboarding = onRestartOnboarding
     }
 
     public var body: some View {
@@ -37,6 +39,21 @@ public struct GeneralView: View {
             .padding(.horizontal, 16)
 
             Spacer()
+
+            if let onRestartOnboarding = onRestartOnboarding {
+                Button {
+                    onRestartOnboarding()
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: "sparkles")
+                        Text("Kurulum Sihirbazını Yeniden Başlat")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .padding(.bottom, 12)
+            }
         }
         .padding(.top, 16)
     }

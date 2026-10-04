@@ -9,12 +9,35 @@ public enum MainTab: String, CaseIterable {
 public struct RootView: View {
     @ObservedObject public var settings: SettingsStore
     @State private var selectedTab: MainTab = .general
+    @State private var showOnboarding: Bool = false
 
     public init(settings: SettingsStore) {
         self.settings = settings
     }
 
     public var body: some View {
+        Group {
+            if showOnboarding {
+                OnboardingView(settings: settings) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        settings.hasCompletedOnboarding = true
+                        showOnboarding = false
+                    }
+                }
+            } else {
+                mainContent
+            }
+        }
+        .frame(width: 560, height: showOnboarding ? 360 : 320)
+        .background(Color(nsColor: .windowBackgroundColor))
+        .onAppear {
+            if !settings.hasCompletedOnboarding {
+                showOnboarding = true
+            }
+        }
+    }
+
+    private var mainContent: some View {
         VStack(spacing: 0) {
             // Centered Tab Control matching Mailway design
             HStack(spacing: 24) {
@@ -38,14 +61,15 @@ public struct RootView: View {
             // Tab Content
             switch selectedTab {
             case .general:
-                GeneralView(settings: settings)
+                GeneralView(settings: settings) {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showOnboarding = true
+                    }
+                }
             case .rules:
-                // Placeholder until Task 10 implements full RulesView
                 RulesView(settings: settings)
             }
         }
-        .frame(width: 560, height: 320)
-        .background(Color(nsColor: .windowBackgroundColor))
         .navigationTitle(selectedTab.rawValue)
     }
 

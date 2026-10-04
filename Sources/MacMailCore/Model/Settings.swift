@@ -7,6 +7,7 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
         static let primaryTarget = "primaryTarget"
         static let alternativeTarget = "alternativeTarget"
         static let rules = "rules"
+        static let hasCompletedOnboarding = "hasCompletedOnboarding"
     }
 
     @Published public var primaryTarget: EmailTarget {
@@ -18,6 +19,10 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
     }
 
     @Published public var rules: [Rule] {
+        didSet { save() }
+    }
+
+    @Published public var hasCompletedOnboarding: Bool {
         didSet { save() }
     }
 
@@ -47,6 +52,9 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
         } else {
             self.rules = []
         }
+
+        // Load hasCompletedOnboarding
+        self.hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
     }
 
     public func save() {
@@ -59,5 +67,6 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
         if let data = try? JSONEncoder().encode(rules) {
             defaults.set(data, forKey: Keys.rules)
         }
+        defaults.set(hasCompletedOnboarding, forKey: Keys.hasCompletedOnboarding)
     }
 }
