@@ -46,6 +46,11 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     public func openSettingsWindow() {
+        // Check installation location and prompt user if needed (e.g. AppTranslocation or duplicate install)
+        if AppLocationManager().promptAndHandleIfNeeded() {
+            return
+        }
+
         isSettingsWindowOpen = true
         NSApp.activate(ignoringOtherApps: true)
         if let existing = NSApp.windows.first(where: { $0.title == "General" || $0.title == "Rules" || $0.title == "mailto:" }) {
