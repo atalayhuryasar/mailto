@@ -7,6 +7,10 @@ let package = Package(
         .macOS(.v15)
     ],
     products: [
+        .executable(
+            name: "MacMail",
+            targets: ["MacMail"]
+        ),
         .library(
             name: "MacMailCore",
             targets: ["MacMailCore"]
@@ -16,6 +20,10 @@ let package = Package(
         .target(
             name: "MacMailCore",
             dependencies: []
+        ),
+        .executableTarget(
+            name: "MacMail",
+            dependencies: ["MacMailCore"]
         ),
         .testTarget(
             name: "MacMailCoreTests",
