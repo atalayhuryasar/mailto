@@ -63,8 +63,13 @@ When you click an email link in Slack, Chrome, Safari, or Notion, macOS stubborn
 
 ### Option 2: Pre-built Binary
 1. Download the latest `mailto.zip` from [GitHub Releases](https://github.com/atalayhuryasar/mailto/releases).
-2. Unzip and drag `mailto:.app` to your `/Applications` folder.
-3. Launch `mailto:` and follow the 3-step onboarding wizard.
+2. Unzip and drag `Mailto.app` to your `/Applications` folder.
+3. Launch `Mailto.app` and follow the 3-step onboarding wizard.
+
+> **Note on macOS Security (Gatekeeper):** Because `mailto:` is a free, open-source community tool without a paid Apple Developer certificate, macOS will block un-notarized internet downloads by default on first launch:
+> - Click **Done** on the dialog.
+> - Go to **System Settings > Privacy & Security**, scroll down to the **Security** section, and click **Open Anyway**.
+> - *(Alternatively, run `xattr -cr /Applications/Mailto.app` in Terminal to instantly bypass the quarantine flag).*
 
 ### Option 3: Build from Source
 Requirements: macOS 14.0+, Xcode 16+ or Swift 6.0+ toolchain.
@@ -78,7 +83,7 @@ cd mailto
 ./scripts/build-app.sh
 
 # 3. Open the built application
-open "build/mailto:.app"
+open "build/Mailto.app"
 ```
 
 ---
@@ -89,7 +94,7 @@ open "build/mailto:.app"
 `mailto:` needs to be registered as your system's default `mailto:` handler. You can do this with a single click inside the **General** settings tab or the first-run onboarding screen.
 
 ### Configuring Rules
-1. Open settings (`open "build/mailto:.app"` or launch from Applications).
+1. Open settings (`open "build/Mailto.app"` or launch from Applications).
 2. Go to the **Rules** tab and click **Add Rule (+)**.
 3. Specify your matching condition:
    - **Matcher Type:** Domain, Domain & Subdomains, or Exact Email Address.

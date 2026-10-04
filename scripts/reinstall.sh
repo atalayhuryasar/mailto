@@ -31,11 +31,11 @@ echo "4. Removing previous build artifacts..."
 rm -rf "$ROOT_DIR/build"
 
 # 5. Rebuild from scratch
-echo "5. Building fresh mailto:.app..."
+echo "5. Building fresh Mailto.app..."
 bash "$SCRIPT_DIR/build-app.sh"
 
 echo ""
 echo "============================================="
 echo "   Clean Reinstall Complete! Opening App...  "
 echo "============================================="
-open "$ROOT_DIR/build/mailto:.app"
+open "$ROOT_DIR/build/Mailto.app"

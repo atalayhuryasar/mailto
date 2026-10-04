@@ -9,9 +9,9 @@ echo "       mailto: End-to-End Verification       "
 echo "============================================="
 
 # 1. Ensure build artifact exists
-APP_PATH="$ROOT_DIR/build/mailto:.app"
+APP_PATH="$ROOT_DIR/build/Mailto.app"
 if [ ! -d "$APP_PATH" ]; then
-    echo "Building mailto:.app..."
+    echo "Building Mailto.app..."
     bash "$SCRIPT_DIR/build-app.sh"
 fi
 
