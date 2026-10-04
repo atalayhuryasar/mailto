@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="Resources/AppIcon.png" width="128" height="128" alt="MacMail Logo" />
+<img src="Resources/AppIcon.png" width="128" height="128" alt="mailto: Logo" />
 
-# MacMail
+# mailto:
 
 ### The lightweight, on-demand `mailto:` router for macOS.
 
@@ -20,11 +20,11 @@
 
 ---
 
-## 💡 Why MacMail?
+## 💡 Why mailto:?
 
 When you click an email link in Slack, Chrome, Safari, or Notion, macOS stubbornly attempts to launch a full-featured desktop mail client. If you use webmail (like Gmail or Outlook 365) or multiple mail accounts for personal and work communication, this behavior is disruptive.
 
-**MacMail solves this cleanly:**
+**mailto: solves this cleanly:**
 - Intercepts all system-wide `mailto:` links.
 - Evaluates your personalized routing rules (e.g. work emails go to Gmail, personal to Apple Mail).
 - Bypasses rules on demand by holding the `Fn` modifier key.
@@ -59,26 +59,26 @@ When you click an email link in Slack, Chrome, Safari, or Notion, macOS stubborn
 ## 📥 Installation
 
 ### Option 1: Mac App Store *(Coming Soon)*
-MacMail is currently being prepared for the Mac App Store. Check back soon for the 1-click App Store install.
+`mailto:` is currently being prepared for the Mac App Store. Check back soon for the 1-click App Store install.
 
 ### Option 2: Pre-built Binary
-1. Download the latest `MacMail.zip` from [GitHub Releases](https://github.com/atalayhuryasar/MacMail/releases).
-2. Unzip and drag `MacMail.app` to your `/Applications` folder.
-3. Launch MacMail and follow the 3-step onboarding wizard.
+1. Download the latest `mailto.zip` from [GitHub Releases](https://github.com/atalayhuryasar/mailto/releases).
+2. Unzip and drag `mailto:.app` to your `/Applications` folder.
+3. Launch `mailto:` and follow the 3-step onboarding wizard.
 
 ### Option 3: Build from Source
 Requirements: macOS 14.0+, Xcode 16+ or Swift 6.0+ toolchain.
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/atalayhuryasar/MacMail.git
-cd MacMail
+git clone https://github.com/atalayhuryasar/mailto.git
+cd mailto
 
 # 2. Build release bundle
 ./scripts/build-app.sh
 
 # 3. Open the built application
-open build/MacMail.app
+open "build/mailto:.app"
 ```
 
 ---
@@ -86,10 +86,10 @@ open build/MacMail.app
 ## 🛠️ Usage & Configuration
 
 ### Setting as Default Mail Client
-MacMail needs to be registered as your system's default `mailto:` handler. You can do this with a single click inside MacMail's **General** settings tab or the first-run onboarding screen.
+`mailto:` needs to be registered as your system's default `mailto:` handler. You can do this with a single click inside the **General** settings tab or the first-run onboarding screen.
 
 ### Configuring Rules
-1. Open MacMail settings (`open build/MacMail.app` or launch from Applications).
+1. Open settings (`open "build/mailto:.app"` or launch from Applications).
 2. Go to the **Rules** tab and click **Add Rule (+)**.
 3. Specify your matching condition:
    - **Matcher Type:** Domain, Domain & Subdomains, or Exact Email Address.
@@ -113,7 +113,7 @@ Hold the **`Fn`** key on your Mac keyboard while clicking any mailto link to imm
 
 ## 🧪 Development & Testing
 
-MacMail is developed strictly using Test-Driven Development (TDD). The core library (`MacMailCore`) is fully decoupled from AppKit UI for rapid, deterministic testing.
+`mailto:` is developed strictly using Test-Driven Development (TDD). The core library (`MailtoCore`) is fully decoupled from AppKit UI for rapid, deterministic testing.
 
 ```bash
 # Run full suite of 40 unit and integration tests

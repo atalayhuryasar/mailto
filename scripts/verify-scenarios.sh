@@ -5,18 +5,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "============================================="
-echo "       MacMail End-to-End Verification       "
+echo "       mailto: End-to-End Verification       "
 echo "============================================="
 
 # 1. Ensure build artifact exists
-APP_PATH="$ROOT_DIR/build/MacMail.app"
+APP_PATH="$ROOT_DIR/build/mailto:.app"
 if [ ! -d "$APP_PATH" ]; then
-    echo "Building MacMail.app..."
+    echo "Building mailto:.app..."
     bash "$SCRIPT_DIR/build-app.sh"
 fi
 
 # 2. Check binary validity
-BINARY="$APP_PATH/Contents/MacOS/MacMail"
+BINARY="$APP_PATH/Contents/MacOS/mailto"
 if [ -x "$BINARY" ]; then
     echo "✔ Binary exists and is executable: $BINARY"
 else
@@ -44,13 +44,13 @@ fi
 
 # 5. Run full test suite
 echo ""
-echo "=== Running 38 Unit & Integration Tests ==="
+echo "=== Running 40 Unit & Integration Tests ==="
 swift test --package-path "$ROOT_DIR"
 
 # 6. Verify LaunchServices registration
 echo ""
 echo "=== Verifying LaunchServices Scheme Claim ==="
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -dump | grep -A5 -B2 "com.atalayhuryasar.macmail" | head -n 12
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -dump | grep -A5 -B2 "com.atalayhuryasar.mailto" | head -n 12
 
 echo ""
 echo "============================================="

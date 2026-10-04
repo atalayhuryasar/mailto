@@ -2,32 +2,32 @@
 import PackageDescription
 
 let package = Package(
-    name: "MacMail",
+    name: "mailto",
     platforms: [
         .macOS(.v15)
     ],
     products: [
         .executable(
-            name: "MacMail",
-            targets: ["MacMail"]
+            name: "mailto",
+            targets: ["Mailto"]
         ),
         .library(
-            name: "MacMailCore",
-            targets: ["MacMailCore"]
+            name: "MailtoCore",
+            targets: ["MailtoCore"]
         )
     ],
     targets: [
         .target(
-            name: "MacMailCore",
+            name: "MailtoCore",
             dependencies: []
         ),
         .executableTarget(
-            name: "MacMail",
-            dependencies: ["MacMailCore"]
+            name: "Mailto",
+            dependencies: ["MailtoCore"]
         ),
         .testTarget(
-            name: "MacMailCoreTests",
-            dependencies: ["MacMailCore"]
+            name: "MailtoCoreTests",
+            dependencies: ["MailtoCore"]
         )
     ]
 )
