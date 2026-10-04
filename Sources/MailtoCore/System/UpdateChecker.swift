@@ -1,24 +1,54 @@
 import Foundation
 
+public struct ReleaseAsset: Sendable, Equatable, Decodable {
+    public let name: String
+    public let browserDownloadUrl: String
+    public let size: Int?
+
+    public init(name: String, browserDownloadUrl: String, size: Int? = nil) {
+        self.name = name
+        self.browserDownloadUrl = browserDownloadUrl
+        self.size = size
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case browserDownloadUrl = "browser_download_url"
+        case size
+    }
+}
+
 public struct ReleaseInfo: Sendable, Equatable, Decodable {
     public let tagName: String
     public let name: String?
     public let body: String?
     public let htmlUrl: String
     public let publishedAt: String?
+    public let assets: [ReleaseAsset]?
 
     public init(
         tagName: String,
         name: String? = nil,
         body: String? = nil,
         htmlUrl: String,
-        publishedAt: String? = nil
+        publishedAt: String? = nil,
+        assets: [ReleaseAsset]? = nil
     ) {
         self.tagName = tagName
         self.name = name
         self.body = body
         self.htmlUrl = htmlUrl
         self.publishedAt = publishedAt
+        self.assets = assets
+    }
+
+    public var zipDownloadURL: URL? {
+        if let assetUrlString = assets?.first(where: { $0.name.lowercased().hasSuffix(".zip") })?.browserDownloadUrl,
+           let url = URL(string: assetUrlString) {
+            return url
+        }
+        let fallback = "https://github.com/atalayhuryasar/mailto/releases/download/\(tagName)/mailto.zip"
+        return URL(string: fallback)
     }
 
     enum CodingKeys: String, CodingKey {
@@ -27,6 +57,7 @@ public struct ReleaseInfo: Sendable, Equatable, Decodable {
         case body
         case htmlUrl = "html_url"
         case publishedAt = "published_at"
+        case assets
     }
 }
 

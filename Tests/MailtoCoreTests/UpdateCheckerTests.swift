@@ -24,6 +24,41 @@ struct UpdateCheckerTests {
         #expect(release.body?.contains("Native menu bar") == true)
     }
 
+    @Test("Decodes GitHub release with assets and resolves zip download URL")
+    func testDecodeReleaseWithAssets() throws {
+        let json = """
+        {
+            "tag_name": "v1.2.3",
+            "name": "mailto: v1.2.3",
+            "html_url": "https://github.com/atalayhuryasar/mailto/releases/tag/v1.2.3",
+            "assets": [
+                {
+                    "name": "mailto.zip",
+                    "browser_download_url": "https://github.com/atalayhuryasar/mailto/releases/download/v1.2.3/mailto.zip",
+                    "size": 3381240
+                }
+            ]
+        }
+        """.data(using: .utf8)!
+
+        let release = try JSONDecoder().decode(ReleaseInfo.self, from: json)
+        #expect(release.assets?.count == 1)
+        #expect(release.assets?.first?.name == "mailto.zip")
+        #expect(release.assets?.first?.browserDownloadUrl == "https://github.com/atalayhuryasar/mailto/releases/download/v1.2.3/mailto.zip")
+        #expect(release.zipDownloadURL?.absoluteString == "https://github.com/atalayhuryasar/mailto/releases/download/v1.2.3/mailto.zip")
+    }
+
+    @Test("Falls back to standard release asset URL if assets array is missing")
+    func testFallbackZipDownloadURL() {
+        let release = ReleaseInfo(
+            tagName: "v1.2.3",
+            name: "v1.2.3",
+            body: nil,
+            htmlUrl: "https://github.com/atalayhuryasar/mailto/releases/tag/v1.2.3"
+        )
+        #expect(release.zipDownloadURL?.absoluteString == "https://github.com/atalayhuryasar/mailto/releases/download/v1.2.3/mailto.zip")
+    }
+
     @Test("Evaluate update availability when newer version exists")
     func testUpdateAvailable() {
         let release = ReleaseInfo(

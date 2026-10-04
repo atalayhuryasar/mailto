@@ -284,14 +284,82 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private func promptUpdateAvailable(newVersion: String, release: ReleaseInfo) {
         let alert = NSAlert()
         alert.messageText = "A new version of mailto: is available!"
-        alert.informativeText = "mailto: v\(newVersion) is available (you currently have v\(MailtoCoreVersion)).\n\nWould you like to open the download page?"
+        alert.informativeText = "mailto: v\(newVersion) is available (you currently have v\(MailtoCoreVersion)).\n\nWould you like to install the update now?"
         alert.alertStyle = .informational
-        alert.addButton(withTitle: "Download Update")
+        alert.addButton(withTitle: "Update & Restart")
         alert.addButton(withTitle: "Later")
+        alert.addButton(withTitle: "View Release Notes")
 
-        if alert.runModal() == .alertFirstButtonReturn {
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            performUpdate(release: release, newVersion: newVersion)
+        } else if response == .alertThirdButtonReturn {
             if let url = URL(string: release.htmlUrl) {
                 NSWorkspace.shared.open(url)
+            }
+        }
+    }
+
+    private func performUpdate(release: ReleaseInfo, newVersion: String) {
+        let progressWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 340, height: 130),
+            styleMask: [.titled],
+            backing: .buffered,
+            defer: false
+        )
+        progressWindow.title = "Updating mailto:"
+        progressWindow.isReleasedWhenClosed = false
+        progressWindow.center()
+
+        let contentView = NSView(frame: NSRect(x: 0, y: 0, width: 340, height: 130))
+
+        let spinner = NSProgressIndicator(frame: NSRect(x: 154, y: 76, width: 32, height: 32))
+        spinner.style = .spinning
+        spinner.controlSize = .regular
+        spinner.isIndeterminate = true
+        spinner.startAnimation(nil)
+        contentView.addSubview(spinner)
+
+        let label = NSTextField(labelWithString: "Updating to v\(newVersion)...")
+        label.frame = NSRect(x: 20, y: 44, width: 300, height: 22)
+        label.alignment = .center
+        label.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
+        contentView.addSubview(label)
+
+        let subLabel = NSTextField(labelWithString: "Downloading package and preparing relaunch.")
+        subLabel.frame = NSRect(x: 20, y: 20, width: 300, height: 18)
+        subLabel.alignment = .center
+        subLabel.font = NSFont.systemFont(ofSize: 11)
+        subLabel.textColor = .secondaryLabelColor
+        contentView.addSubview(subLabel)
+
+        progressWindow.contentView = contentView
+        progressWindow.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+
+        Task {
+            let updater = AppUpdater()
+            do {
+                let installedAppURL = try await updater.downloadAndInstall(release: release)
+                await MainActor.run {
+                    progressWindow.close()
+                    updater.relaunchAndTerminate(at: installedAppURL)
+                }
+            } catch {
+                await MainActor.run {
+                    progressWindow.close()
+                    let failAlert = NSAlert()
+                    failAlert.messageText = "Update Failed"
+                    failAlert.informativeText = "Unable to install update: \(error.localizedDescription)\n\nWould you like to open the release page in your browser?"
+                    failAlert.alertStyle = .warning
+                    failAlert.addButton(withTitle: "Open Release Page")
+                    failAlert.addButton(withTitle: "Cancel")
+                    if failAlert.runModal() == .alertFirstButtonReturn {
+                        if let url = URL(string: release.htmlUrl) {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                }
             }
         }
     }
