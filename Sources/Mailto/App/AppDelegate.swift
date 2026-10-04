@@ -243,7 +243,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                         alert.informativeText = "mailto: v\(MailtoCoreVersion) is currently the newest version."
                         alert.alertStyle = .informational
                         alert.addButton(withTitle: "OK")
-                        alert.runModal()
+                        alert.centered().runModal()
                     }
                 }
             } catch {
@@ -252,7 +252,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                     alert.informativeText = "Unable to check for updates: \(error.localizedDescription)"
                     alert.alertStyle = .warning
                     alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    alert.centered().runModal()
                 }
             }
         }
@@ -290,7 +290,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.addButton(withTitle: "Later")
         alert.addButton(withTitle: "View Release Notes")
 
-        let response = alert.runModal()
+        let response = alert.centered().runModal()
         if response == .alertFirstButtonReturn {
             performUpdate(release: release, newVersion: newVersion)
         } else if response == .alertThirdButtonReturn {
@@ -354,7 +354,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                     failAlert.alertStyle = .warning
                     failAlert.addButton(withTitle: "Open Release Page")
                     failAlert.addButton(withTitle: "Cancel")
-                    if failAlert.runModal() == .alertFirstButtonReturn {
+                    if failAlert.centered().runModal() == .alertFirstButtonReturn {
                         if let url = URL(string: release.htmlUrl) {
                             NSWorkspace.shared.open(url)
                         }

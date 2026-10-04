@@ -70,7 +70,7 @@ public final class AppLocationManager: @unchecked Sendable {
             alert.addButton(withTitle: "Move to Applications")
             alert.addButton(withTitle: "Do Not Move")
 
-            let response = alert.runModal()
+            let response = alert.centered().runModal()
             if response == .alertFirstButtonReturn {
                 do {
                     try copyAppBundle(from: runningSource, to: destinationURL)
@@ -92,7 +92,7 @@ public final class AppLocationManager: @unchecked Sendable {
             alert.addButton(withTitle: "Open Installed App")
             alert.addButton(withTitle: "Cancel")
 
-            let response = alert.runModal()
+            let response = alert.centered().runModal()
             if response == .alertFirstButtonReturn {
                 let config = NSWorkspace.OpenConfiguration()
                 config.activates = true
@@ -113,7 +113,7 @@ public final class AppLocationManager: @unchecked Sendable {
             alert.addButton(withTitle: "Update & Relaunch")
             alert.addButton(withTitle: "Not Now")
 
-            let response = alert.runModal()
+            let response = alert.centered().runModal()
             if response == .alertFirstButtonReturn {
                 do {
                     try copyAppBundle(from: runningSource, to: installedURL)
@@ -136,6 +136,6 @@ public final class AppLocationManager: @unchecked Sendable {
         alert.informativeText = error.localizedDescription
         alert.alertStyle = .critical
         alert.addButton(withTitle: "OK")
-        alert.runModal()
+        alert.centered().runModal()
     }
 }
