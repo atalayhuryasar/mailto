@@ -91,9 +91,10 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let aboutItem = NSMenuItem(
             title: "About mailto:",
-            action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)),
+            action: #selector(handleAboutMenu),
             keyEquivalent: ""
         )
+        aboutItem.target = self
         appMenu.addItem(aboutItem)
 
         let checkUpdatesItem = NSMenuItem(
@@ -187,6 +188,47 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     // MARK: - Actions
+    @objc public func handleAboutMenu() {
+        let credits = NSMutableAttributedString()
+        let pStyle = NSMutableParagraphStyle()
+        pStyle.alignment = .center
+        pStyle.lineSpacing = 4
+
+        credits.append(NSAttributedString(
+            string: "Lightweight, zero-footprint mailto: router for macOS.\n\n",
+            attributes: [
+                .font: NSFont.systemFont(ofSize: 11),
+                .foregroundColor: NSColor.secondaryLabelColor,
+                .paragraphStyle: pStyle
+            ]
+        ))
+
+        credits.append(NSAttributedString(
+            string: "Created by Atalay Huryasar\n100% Open Source • MIT License\n\n",
+            attributes: [
+                .font: NSFont.boldSystemFont(ofSize: 11),
+                .foregroundColor: NSColor.labelColor,
+                .paragraphStyle: pStyle
+            ]
+        ))
+
+        if let siteURL = URL(string: "https://mailto.huryasar.com") {
+            credits.append(NSAttributedString(
+                string: "mailto.huryasar.com",
+                attributes: [
+                    .font: NSFont.systemFont(ofSize: 11),
+                    .link: siteURL,
+                    .foregroundColor: NSColor.linkColor,
+                    .paragraphStyle: pStyle
+                ]
+            ))
+        }
+
+        NSApp.orderFrontStandardAboutPanel(options: [
+            .credits: credits
+        ])
+    }
+
     @objc public func handleCheckForUpdatesMenu() {
         Task {
             let alert = NSAlert()

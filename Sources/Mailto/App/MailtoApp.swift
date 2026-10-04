@@ -21,7 +21,7 @@ struct MailtoApp: App {
         .commands {
             CommandGroup(replacing: .appInfo) {
                 Button("About mailto:") {
-                    NSApp.orderFrontStandardAboutPanel(nil)
+                    appDelegate.handleAboutMenu()
                 }
                 Button("Check for Updates...") {
                     appDelegate.handleCheckForUpdatesMenu()
