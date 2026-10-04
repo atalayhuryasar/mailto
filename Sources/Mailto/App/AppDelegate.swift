@@ -231,7 +231,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc public func handleCheckForUpdatesMenu() {
         Task {
-            let alert = NSAlert()
             do {
                 let result = try await UpdateChecker().checkForUpdates(currentVersion: MailtoCoreVersion)
                 await MainActor.run {
@@ -239,20 +238,26 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                     case .updateAvailable(let newVersion, let release):
                         promptUpdateAvailable(newVersion: newVersion, release: release)
                     case .upToDate:
-                        alert.messageText = "You're Up to Date!"
-                        alert.informativeText = "mailto: v\(MailtoCoreVersion) is currently the newest version."
-                        alert.alertStyle = .informational
-                        alert.addButton(withTitle: "OK")
-                        alert.centered().runModal()
+                        CustomAlertPresenter.show(
+                            title: "You're Up to Date!",
+                            message: "mailto: v\(MailtoCoreVersion) is currently the newest version.",
+                            actions: [
+                                AlertActionItem(title: "OK", isPrimary: true, isCancel: true, action: {})
+                            ]
+                        )
                     }
                 }
             } catch {
                 await MainActor.run {
-                    alert.messageText = "Update Check Failed"
-                    alert.informativeText = "Unable to check for updates: \(error.localizedDescription)"
-                    alert.alertStyle = .warning
-                    alert.addButton(withTitle: "OK")
-                    alert.centered().runModal()
+                    CustomAlertPresenter.show(
+                        iconSystemName: "exclamationmark.triangle.fill",
+                        iconColor: .orange,
+                        title: "Update Check Failed",
+                        message: "Unable to check for updates: \(error.localizedDescription)",
+                        actions: [
+                            AlertActionItem(title: "OK", isPrimary: true, isCancel: true, action: {})
+                        ]
+                    )
                 }
             }
         }
@@ -282,22 +287,21 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func promptUpdateAvailable(newVersion: String, release: ReleaseInfo) {
-        let alert = NSAlert()
-        alert.messageText = "A new version of mailto: is available!"
-        alert.informativeText = "mailto: v\(newVersion) is available (you currently have v\(MailtoCoreVersion)).\n\nWould you like to install the update now?"
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "Update & Restart")
-        alert.addButton(withTitle: "Later")
-        alert.addButton(withTitle: "View Release Notes")
-
-        let response = alert.centered().runModal()
-        if response == .alertFirstButtonReturn {
-            performUpdate(release: release, newVersion: newVersion)
-        } else if response == .alertThirdButtonReturn {
-            if let url = URL(string: release.htmlUrl) {
-                NSWorkspace.shared.open(url)
-            }
-        }
+        CustomAlertPresenter.show(
+            title: "A new version of mailto: is available!",
+            message: "mailto: v\(newVersion) is available (you currently have v\(MailtoCoreVersion)).\n\nWould you like to install the update now?",
+            actions: [
+                AlertActionItem(title: "Update & Restart", isPrimary: true) { [weak self] in
+                    self?.performUpdate(release: release, newVersion: newVersion)
+                },
+                AlertActionItem(title: "Later", isPrimary: false, isCancel: true, action: {}),
+                AlertActionItem(title: "View Release Notes", isPrimary: false) {
+                    if let url = URL(string: release.htmlUrl) {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+            ]
+        )
     }
 
     private func performUpdate(release: ReleaseInfo, newVersion: String) {
@@ -348,17 +352,20 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             } catch {
                 await MainActor.run {
                     progressWindow.close()
-                    let failAlert = NSAlert()
-                    failAlert.messageText = "Update Failed"
-                    failAlert.informativeText = "Unable to install update: \(error.localizedDescription)\n\nWould you like to open the release page in your browser?"
-                    failAlert.alertStyle = .warning
-                    failAlert.addButton(withTitle: "Open Release Page")
-                    failAlert.addButton(withTitle: "Cancel")
-                    if failAlert.centered().runModal() == .alertFirstButtonReturn {
-                        if let url = URL(string: release.htmlUrl) {
-                            NSWorkspace.shared.open(url)
-                        }
-                    }
+                    CustomAlertPresenter.show(
+                        iconSystemName: "exclamationmark.triangle.fill",
+                        iconColor: .orange,
+                        title: "Update Failed",
+                        message: "Unable to install update: \(error.localizedDescription)\n\nWould you like to open the release page in your browser?",
+                        actions: [
+                            AlertActionItem(title: "Open Release Page", isPrimary: true) {
+                                if let url = URL(string: release.htmlUrl) {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            },
+                            AlertActionItem(title: "Cancel", isPrimary: false, isCancel: true, action: {})
+                        ]
+                    )
                 }
             }
         }
