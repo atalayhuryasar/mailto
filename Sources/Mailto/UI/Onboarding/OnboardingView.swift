@@ -291,14 +291,23 @@ public struct OnboardingView: View {
             Spacer()
 
             if currentStep < 2 {
-                Button("Next") {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        currentStep += 1
-                        checkDefaultAppStatus()
+                HStack(spacing: 12) {
+                    if currentStep == 0 && !isDefaultEmailApp {
+                        Text("Set as default above to continue")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
+
+                    Button("Next") {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            currentStep += 1
+                            checkDefaultAppStatus()
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.regular)
+                    .disabled(currentStep == 0 && !isDefaultEmailApp)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
             } else {
                 Button("Get Started") {
                     onFinish()
@@ -315,7 +324,12 @@ public struct OnboardingView: View {
     }
 
     private func makeDefault() {
-        DefaultMailAppManager.setMailtoAsDefault()
+        _ = DefaultMailAppManager.setMailtoAsDefault()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation {
+                self.isDefaultEmailApp = DefaultMailAppManager.isMailtoDefault
+            }
+        }
         withAnimation {
             isDefaultEmailApp = DefaultMailAppManager.isMailtoDefault
         }
