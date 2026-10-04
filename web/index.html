@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mailto: — The Intelligent, Zero-Footprint mailto: Router for macOS</title>
+  <meta name="description" content="Route clicked email links to your preferred desktop client, webmail (Gmail, Fastmail, Outlook 365), or clipboard with zero background overhead. 100% open source for macOS.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#080a10">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mailto.huryasar.com/">
+  <meta property="og:title" content="mailto: — The Intelligent mailto: Router for macOS">
+  <meta property="og:description" content="Silently intercept email links on macOS and dispatch them to Gmail, Fastmail, Outlook, or native apps using smart rules. Zero idle CPU.">
+  <meta property="og:image" content="assets/AppIcon.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/AppIcon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ambient background glow layers -->
+  <div class="ambient-glow glow-top" aria-hidden="true"></div>
+  <div class="ambient-glow glow-middle" aria-hidden="true"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="#" class="brand-logo" id="logo-link">
+        <img src="assets/AppIcon.png" alt="mailto: Logo" width="34" height="34" class="logo-img">
+        <span class="brand-name">mailto:</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#demo" class="nav-link">Live Demo</a>
+        <a href="#install" class="nav-link">Install</a>
+        <a href="#comparison" class="nav-link">Why mailto:</a>
+        <a href="https://github.com/atalayhuryasar/mailto" target="_blank" rel="noopener" class="nav-link external-link">GitHub ↗</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#install" class="btn btn-sm btn-primary">Get mailto:</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero-section">
+      <div class="container hero-container">
+        
+        <div class="hero-badge-wrapper">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-text">v1.0.0 Now Available • macOS 14.0+ • 100% Open Source</span>
+          </div>
+        </div>
+
+        <h1 class="hero-title">
+          Stop wrestling with <span class="gradient-text">mailto:</span> links on your Mac.
+        </h1>
+
+        <p class="hero-subtitle">
+          The ultra-lightweight, zero-footprint router that intercepts clicked email links in Safari, Chrome, Slack, and Notion — automatically dispatching them to <strong>Gmail, Fastmail, Outlook 365</strong>, or your favorite desktop client.
+        </p>
+
+        <!-- Command Widget -->
+        <div class="hero-install-box">
+          <div class="terminal-pill">
+            <span class="terminal-prompt">$</span>
+            <code id="brew-hero-cmd">brew install --cask atalayhuryasar/tap/mailto</code>
+            <button class="copy-btn" id="hero-copy-btn" title="Copy to clipboard" aria-label="Copy brew install command">
+              <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="copy-text">Copy</span>
+            </button>
+          </div>
+          <span class="copy-toast" id="copy-toast">Copied to clipboard!</span>
+        </div>
+
+        <!-- Hero Actions -->
+        <div class="hero-cta-group">
+          <a href="https://github.com/atalayhuryasar/mailto/releases/download/v1.0.0/mailto.zip" class="btn btn-lg btn-primary" id="hero-download-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download for Mac (.zip)
+          </a>
+          <a href="https://github.com/atalayhuryasar/mailto" target="_blank" rel="noopener" class="btn btn-lg btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            Star on GitHub
+          </a>
+        </div>
+
+        <!-- Metrics pill bar -->
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <span class="metric-val">0%</span>
+            <span class="metric-lbl">Idle CPU Usage</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-val">0 MB</span>
+            <span class="metric-lbl">Background RAM</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-val">&lt; 15ms</span>
+            <span class="metric-lbl">Execution Time</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-val">100%</span>
+            <span class="metric-lbl">Local &amp; Private</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Interactive Simulator Section -->
+    <section class="demo-section" id="demo">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-tag">Interactive Simulation</div>
+          <h2 class="section-title">See how mailto: handles clicks in real time</h2>
+          <p class="section-desc">Try clicking different email scenarios below to see how rules, webmail templates, and the Fn modifier instantly dispatch links.</p>
+        </div>
+
+        <div class="mac-window-wrapper">
+          <div class="mac-window">
+            
+            <!-- Window Titlebar -->
+            <div class="mac-titlebar">
+              <div class="mac-controls">
+                <span class="mac-btn close"></span>
+                <span class="mac-btn minimize"></span>
+                <span class="mac-btn zoom"></span>
+              </div>
+              <div class="mac-title">
+                <span class="window-title-icon">⚡</span>
+                <span>mailto: Live Dispatch Inspector</span>
+              </div>
+              <div class="mac-spacer"></div>
+            </div>
+
+            <!-- Window Content -->
+            <div class="mac-body">
+              
+              <!-- Left Sidebar: Test Clicks -->
+              <div class="mac-sidebar">
+                <div class="sidebar-header">
+                  <h3>Simulate Email Click</h3>
+                  <p>Choose an incoming mailto link:</p>
+                </div>
+
+                <div class="email-buttons-list">
+                  <button class="sim-btn active" data-email="dev@acme-corp.com" data-source="Slack" data-label="Company Work Email">
+                    <div class="sim-btn-info">
+                      <span class="sim-btn-title">Work Domain Rule</span>
+                      <span class="sim-btn-email">dev@acme-corp.com</span>
+                    </div>
+                    <span class="sim-btn-tag work">Work</span>
+                  </button>
+
+                  <button class="sim-btn" data-email="notifications@github.com" data-source="Google Chrome" data-label="Developer Notification">
+                    <div class="sim-btn-info">
+                      <span class="sim-btn-title">Fastmail / Webmail Rule</span>
+                      <span class="sim-btn-email">notifications@github.com</span>
+                    </div>
+                    <span class="sim-btn-tag web">Personal</span>
+                  </button>
+
+                  <button class="sim-btn" data-email="friend@gmail.com" data-source="Discord" data-label="General Contact">
+                    <div class="sim-btn-info">
+                      <span class="sim-btn-title">Default Fallback</span>
+                      <span class="sim-btn-email">friend@gmail.com</span>
+                    </div>
+                    <span class="sim-btn-tag default">Default</span>
+                  </button>
+
+                  <button class="sim-btn" data-email="invoicing@supplier.io" data-source="Notion" data-label="Accounting Address">
+                    <div class="sim-btn-info">
+                      <span class="sim-btn-title">Copy to Clipboard</span>
+                      <span class="sim-btn-email">invoicing@supplier.io</span>
+                    </div>
+                    <span class="sim-btn-tag clip">Copy Only</span>
+                  </button>
+                </div>
+
+                <!-- Modifier Switch -->
+                <div class="modifier-box">
+                  <div class="modifier-content">
+                    <span class="modifier-icon">⌨️</span>
+                    <div>
+                      <div class="modifier-title">Hold Fn Key Override</div>
+                      <div class="modifier-desc">Bypass all rules instantly</div>
+                    </div>
+                  </div>
+                  <label class="switch" aria-label="Toggle Fn key override">
+                    <input type="checkbox" id="fn-toggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Right Canvas: Pipeline & Destination Output -->
+              <div class="mac-canvas">
+                
+                <div class="canvas-header">
+                  <span class="canvas-label">ROUTING PIPELINE</span>
+                  <span class="status-badge" id="pipeline-status">Dispatched in 11ms</span>
+                </div>
+
+                <!-- Animated Steps Timeline -->
+                <div class="pipeline-steps">
+                  <div class="step-card active" id="step-intercept">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                      <div class="step-title">Link Intercepted</div>
+                      <code class="step-code" id="display-url">mailto:dev@acme-corp.com</code>
+                    </div>
+                  </div>
+
+                  <div class="step-card active" id="step-eval">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                      <div class="step-title">Rule Evaluation</div>
+                      <div class="step-detail" id="rule-explanation">Matched domain rule <strong>@acme-corp.com</strong></div>
+                    </div>
+                  </div>
+
+                  <div class="step-card active" id="step-dispatch">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                      <div class="step-title">Target Execution</div>
+                      <div class="step-detail" id="dispatch-explanation">Directing to Outlook 365 (Webmail)</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Destination Card Simulation -->
+                <div class="destination-card" id="destination-card">
+                  <div class="dest-icon" id="dest-icon">🏢</div>
+                  <div class="dest-details">
+                    <div class="dest-target" id="dest-target">Outlook 365 (Work Webmail)</div>
+                    <div class="dest-action" id="dest-action">Opening browser tab with pre-filled composer:</div>
+                    <div class="dest-url-preview" id="dest-url-preview">https://outlook.office.com/mail/deeplink/compose?to=dev@acme-corp.com</div>
+                  </div>
+                  <div class="dest-speed">
+                    <span class="speed-val">12 ms</span>
+                    <span class="speed-lbl">0% CPU / Exit</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why mailto: (Problem vs Solution) -->
+    <section class="comparison-section" id="comparison">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-tag">Comparison</div>
+          <h2 class="section-title">The clean alternative to bloated email handling</h2>
+          <p class="section-desc">Traditional solutions either force heavy desktop apps or run background daemons. mailto: rethinks email routing from first principles.</p>
+        </div>
+
+        <div class="comparison-grid">
+          
+          <!-- Column 1: macOS Default -->
+          <div class="comp-col card-blur">
+            <h3 class="comp-title">macOS Default Behavior</h3>
+            <p class="comp-desc">What happens when you click an email link out of the box.</p>
+            <ul class="comp-list negative">
+              <li>Opens Apple Mail desktop client automatically</li>
+              <li>Freezes for 3-5 seconds while the heavy client initializes</li>
+              <li>No webmail support (Gmail, Fastmail, Outlook 365)</li>
+              <li>Cannot split work vs. personal addresses</li>
+              <li>No option to just copy email address</li>
+            </ul>
+          </div>
+
+          <!-- Column 2: mailto: (Winner) -->
+          <div class="comp-col card-blur featured-col">
+            <div class="winner-badge">⭐ Modern Way</div>
+            <h3 class="comp-title gradient-text">mailto:</h3>
+            <p class="comp-desc">Lightweight, instant, zero background footprint.</p>
+            <ul class="comp-list positive">
+              <li><strong>0 MB idle RAM:</strong> Exits immediately after routing</li>
+              <li><strong>Direct webmail dispatch:</strong> Gmail, Fastmail, 365, Yahoo</li>
+              <li><strong>Smart Domain Rules:</strong> Work to Outlook, Personal to Gmail</li>
+              <li><strong>Instant Fn Shortcut:</strong> Bypass rules on demand</li>
+              <li><strong>Copy to Clipboard mode:</strong> Clean address extraction</li>
+              <li><strong>100% Free &amp; Open Source:</strong> Zero tracking or daemons</li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Browser Extensions / Daemons -->
+          <div class="comp-col card-blur">
+            <h3 class="comp-title">Heavy Background Daemons</h3>
+            <p class="comp-desc">Third-party mail managers and extensions.</p>
+            <ul class="comp-list negative">
+              <li>Permanently sits in menu bar consuming 80-150MB RAM</li>
+              <li>Browser extensions only work inside that single browser</li>
+              <li>Fails when links are clicked in Slack, Teams, or PDF docs</li>
+              <li>Many require paid subscriptions or track analytics</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Bento Grid -->
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-tag">Features</div>
+          <h2 class="section-title">Engineered with obsessively clean craftsmanship</h2>
+          <p class="section-desc">Designed to feel like a native, missing macOS capability.</p>
+        </div>
+
+        <div class="bento-grid">
+          
+          <!-- Bento 1: Zero Background Footprint -->
+          <div class="bento-card bento-span-2">
+            <div class="bento-icon">⚡</div>
+            <h3 class="bento-title">Zero Background Overhead</h3>
+            <p class="bento-text">
+              <code>mailto:</code> registers cleanly with macOS LaunchServices without running any background helpers, login items, or menu bar daemons. When an email link is clicked, it initializes in 8ms, dispatches the URL, and terminates immediately.
+            </p>
+            <div class="bento-visual memory-meter">
+              <div class="meter-bar">
+                <span class="meter-fill zero"></span>
+              </div>
+              <div class="meter-label">Background CPU: <strong>0.00%</strong> • Idle RAM: <strong>0.00 MB</strong></div>
+            </div>
+          </div>
+
+          <!-- Bento 2: Fn Override -->
+          <div class="bento-card">
+            <div class="bento-icon">⌨️</div>
+            <h3 class="bento-title">The Magic Fn Key</h3>
+            <p class="bento-text">
+              Hold the <strong>Fn</strong> key while clicking any email link to bypass all matching rules and route directly to your designated alternative client or clipboard.
+            </p>
+          </div>
+
+          <!-- Bento 3: Domain Rules -->
+          <div class="bento-card">
+            <div class="bento-icon">🎯</div>
+            <h3 class="bento-title">Smart Domain Matching</h3>
+            <p class="bento-text">
+              Create rules targeting exact addresses (<code>team@corp.com</code>), domains (<code>acme.org</code>), or subdomains with priority sorting.
+            </p>
+          </div>
+
+          <!-- Bento 4: Source App Awareness -->
+          <div class="bento-card">
+            <div class="bento-icon">🔍</div>
+            <h3 class="bento-title">Source Application Filters</h3>
+            <p class="bento-text">
+              Differentiate where links were clicked. Send links clicked in Slack or Teams to your work client, and links clicked in Discord or Safari to personal webmail.
+            </p>
+          </div>
+
+          <!-- Bento 5: 10+ Webmail Providers -->
+          <div class="bento-card bento-span-2">
+            <div class="bento-icon">🌐</div>
+            <h3 class="bento-title">Built-in Webmail &amp; Custom Compose Templates</h3>
+            <p class="bento-text">
+              Pre-configured deep-links for Gmail, Fastmail, Outlook 365, Outlook.com, Yahoo, Yandex, AOL, and Zoho. Plus, construct custom compose URLs with dynamic placeholders like <code>{to}</code>, <code>{subject}</code>, and <code>{body}</code>.
+            </p>
+            <div class="provider-badges">
+              <span class="prov-badge">Gmail</span>
+              <span class="prov-badge">Outlook 365</span>
+              <span class="prov-badge">Fastmail</span>
+              <span class="prov-badge">Outlook.com</span>
+              <span class="prov-badge">Yahoo</span>
+              <span class="prov-badge">Mimestream</span>
+              <span class="prov-badge">Apple Mail</span>
+              <span class="prov-badge">Custom URL</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section class="install-section" id="install">
+      <div class="container install-container">
+        <div class="section-header text-center">
+          <div class="section-tag">Get Started</div>
+          <h2 class="section-title">Install mailto: in seconds</h2>
+          <p class="section-desc">Pick your preferred installation method below.</p>
+        </div>
+
+        <div class="install-tabs-card">
+          
+          <!-- Tabs Header -->
+          <div class="tabs-nav" role="tablist">
+            <button class="tab-btn active" data-tab="tab-brew" role="tab" aria-selected="true">
+              <span>🍺 Homebrew (Recommended)</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-direct" role="tab" aria-selected="false">
+              <span>📦 Direct Download (.zip)</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-source" role="tab" aria-selected="false">
+              <span>🛠️ Build from Source</span>
+            </button>
+          </div>
+
+          <!-- Tab Content 1: Homebrew -->
+          <div class="tab-pane active" id="tab-brew" role="tabpanel">
+            <p class="tab-intro">The fastest, cleanest way to install and keep <code>mailto:</code> updated automatically via Homebrew.</p>
+            <div class="terminal-block">
+              <div class="terminal-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="term-title">zsh</span>
+              </div>
+              <pre class="terminal-code"><code><span class="t-cmd">brew</span> install --cask atalayhuryasar/tap/mailto</code></pre>
+              <button class="tab-copy-btn" data-copy="brew install --cask atalayhuryasar/tap/mailto" aria-label="Copy command">Copy</button>
+            </div>
+            <p class="tab-note">✓ Requires no security approvals. Ready to use immediately!</p>
+          </div>
+
+          <!-- Tab Content 2: Direct Download -->
+          <div class="tab-pane" id="tab-direct" role="tabpanel">
+            <p class="tab-intro">Download the standalone pre-compiled macOS application bundle.</p>
+            
+            <div class="direct-download-action">
+              <a href="https://github.com/atalayhuryasar/mailto/releases/download/v1.0.0/mailto.zip" class="btn btn-primary btn-lg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download mailto.zip (v1.0.0)
+              </a>
+              <span class="file-info">Universal macOS Binary • macOS 14.0+</span>
+            </div>
+
+            <div class="gatekeeper-tip">
+              <div class="tip-title">💡 Note on First Launch (macOS Security)</div>
+              <p>As a community open-source project without a $99/yr Apple certificate, macOS may ask for first-time permission:</p>
+              <ol>
+                <li>Unzip and drag <code>Mailto.app</code> into <code>/Applications</code>.</li>
+                <li>If prompted on first click, click <strong>Done</strong>, then open <strong>System Settings > Privacy &amp; Security</strong>, scroll down and click <strong>Open Anyway</strong>.</li>
+                <li><em>Or run <code>xattr -cr /Applications/Mailto.app</code> in Terminal to unlock instantly.</em></li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Tab Content 3: Build from Source -->
+          <div class="tab-pane" id="tab-source" role="tabpanel">
+            <p class="tab-intro">Compile locally using Swift 6.0 and standard Apple toolchains.</p>
+            <div class="terminal-block">
+              <div class="terminal-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="term-title">terminal</span>
+              </div>
+              <pre class="terminal-code"><code><span class="t-comment"># Clone and build</span>
+<span class="t-cmd">git</span> clone https://github.com/atalayhuryasar/mailto.git
+<span class="t-cmd">cd</span> mailto
+<span class="t-cmd">./scripts/build-app.sh</span>
+<span class="t-cmd">open</span> "build/Mailto.app"</code></pre>
+              <button class="tab-copy-btn" data-copy="git clone https://github.com/atalayhuryasar/mailto.git && cd mailto && ./scripts/build-app.sh && open build/Mailto.app" aria-label="Copy command">Copy</button>
+            </div>
+            <p class="tab-note">✓ Locally built apps bypass Gatekeeper automatically.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+      <div class="container faq-container">
+        <div class="section-header text-center">
+          <div class="section-tag">FAQ</div>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-accordion">
+          
+          <details class="faq-item" open>
+            <summary class="faq-question">How does mailto: consume 0% idle CPU and RAM?</summary>
+            <div class="faq-answer">
+              Unlike traditional apps that stay running in your dock or menu bar, <code>mailto:</code> configures itself solely as a LaunchServices URL handler with <code>LSUIElement=true</code>. When you click a mailto link, macOS wakes the process, <code>mailto:</code> parses the link and dispatches it according to your rules in under 15ms, and then terminates immediately.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">How does the Fn key override work?</summary>
+            <div class="faq-answer">
+              When a link is clicked, <code>mailto:</code> inspects the system hardware flags for the Fn (Globe) key. If you are holding Fn during the click, it bypasses all domain rules and immediately routes to your pre-configured Alternative Target (e.g. Apple Mail or Clipboard).
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Are in-browser Chrome and Safari extensions planned?</summary>
+            <div class="faq-answer">
+              Yes! Native Manifest V3 extensions for Chrome and Safari are currently on our roadmap to allow in-tab intercepting for users who prefer in-browser handling.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Does mailto: collect any analytics or email addresses?</summary>
+            <div class="faq-answer">
+              <strong>Never.</strong> <code>mailto:</code> has no analytics SDKs, no tracking pixels, and does not make any external network requests other than directing your browser to the webmail URL you configured. All settings are stored locally in your Mac's UserDefaults.
+            </div>
+          </details>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <img src="assets/AppIcon.png" alt="mailto: Logo" width="24" height="24">
+          <span class="footer-title">mailto:</span>
+        </div>
+        <p class="footer-copy">
+          Designed &amp; built by <a href="https://github.com/atalayhuryasar" target="_blank" rel="noopener">Atalay Huryasar</a>. Released under the MIT License.
+        </p>
+      </div>
+
+      <div class="footer-right">
+        <a href="https://mailto.huryasar.com" class="footer-link">mailto.huryasar.com</a>
+        <a href="https://github.com/atalayhuryasar/mailto" target="_blank" rel="noopener" class="footer-link">GitHub Repository</a>
+        <a href="https://github.com/atalayhuryasar/homebrew-tap" target="_blank" rel="noopener" class="footer-link">Homebrew Tap</a>
+        <a href="https://github.com/atalayhuryasar/mailto/releases" target="_blank" rel="noopener" class="footer-link">Releases</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
