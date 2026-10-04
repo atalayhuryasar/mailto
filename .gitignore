@@ -10,8 +10,10 @@ DerivedData/
 *.swp
 *~
 
-# Internal Workspace & Task Progress (Kept locally, excluded from public repo)
+# Internal Workspace, Dev Scripts & Asset Sources (Kept locally)
 PLAN.md
 _refs/
+AppIcons/
 .superpowers/
 docs/superpowers/
+scripts/generate-icons.sh
