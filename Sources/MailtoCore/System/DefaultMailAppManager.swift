@@ -5,14 +5,18 @@ import AppKit
 public enum DefaultMailAppManager {
     public static let mailtoBundleIdentifier = "com.atalayhuryasar.mailto"
 
-    public static var isMailtoDefault: Bool {
-        guard let mailtoURL = URL(string: "mailto:") else { return false }
-        if let defaultAppURL = NSWorkspace.shared.urlForApplication(toOpen: mailtoURL),
+    public static func isAppDefault(bundleIdentifier: String, scheme: String = "mailto") -> Bool {
+        guard let url = URL(string: "\(scheme):") else { return false }
+        if let defaultAppURL = NSWorkspace.shared.urlForApplication(toOpen: url),
            let bundle = Bundle(url: defaultAppURL),
-           bundle.bundleIdentifier == mailtoBundleIdentifier {
+           bundle.bundleIdentifier == bundleIdentifier {
             return true
         }
         return false
+    }
+
+    public static var isMailtoDefault: Bool {
+        return isAppDefault(bundleIdentifier: mailtoBundleIdentifier)
     }
 
     @discardableResult

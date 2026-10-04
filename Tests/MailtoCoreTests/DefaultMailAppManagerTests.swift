@@ -8,6 +8,11 @@ import Foundation
     #expect(isDefault == true || isDefault == false)
 }
 
+@Test func testIsAppDefaultWithBogusBundle() {
+    let isBogusDefault = DefaultMailAppManager.isAppDefault(bundleIdentifier: "com.nonexistent.fakeapp")
+    #expect(isBogusDefault == false)
+}
+
 @Test func testSetMailtoAsDefault() {
     let result = DefaultMailAppManager.setMailtoAsDefault()
     #expect(result == true)
