@@ -38,7 +38,18 @@ public final class TargetDispatcher: TargetDispatching, @unchecked Sendable {
         switch target {
         case .clipboard:
             let addresses = message.to.map(\.address).joined(separator: ", ")
-            clipboardWriter.copy(text: addresses)
+            let textToCopy: String
+            if !addresses.isEmpty {
+                textToCopy = addresses
+            } else if !message.cc.isEmpty {
+                textToCopy = message.cc.map(\.address).joined(separator: ", ")
+            } else if !message.bcc.isEmpty {
+                textToCopy = message.bcc.map(\.address).joined(separator: ", ")
+            } else {
+                let raw = message.rawURL.absoluteString
+                textToCopy = raw.hasPrefix("mailto:") ? String(raw.dropFirst("mailto:".count)) : raw
+            }
+            clipboardWriter.copy(text: textToCopy)
             completion(.success(()))
 
         case .webmail, .customURL:

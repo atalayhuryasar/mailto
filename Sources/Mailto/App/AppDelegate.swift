@@ -11,14 +11,41 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     public var isSettingsWindowOpen: Bool = false
     private var frontmostAppAtLaunch: String?
 
+    private var isHandlingURL: Bool = false
+    private var lastHandledURL: URL?
+    private var lastHandledTime: Date = .distantPast
+
     public func applicationWillFinishLaunching(_ notification: Notification) {
         // Capture caller before activation changes frontmost application
         frontmostAppAtLaunch = NSWorkspace.shared.frontmostApplication?.bundleIdentifier
+
+        NSAppleEventManager.shared().setEventHandler(
+            self,
+            andSelector: #selector(handleAppleEventGetURL(_:withReplyEvent:)),
+            forEventClass: AEEventClass(kInternetEventClass),
+            andEventID: AEEventID(kAEGetURL)
+        )
+    }
+
+    @objc private func handleAppleEventGetURL(_ event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor) {
+        guard let urlString = event.paramDescriptor(forKeyword: keyDirectObject)?.stringValue,
+              let url = URL(string: urlString) else {
+            return
+        }
+        handleMailto(url: url)
     }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
-        // When launched directly (not via mailto: URL dispatch), activate UI immediately
-        if !isSettingsWindowOpen {
+        // Check if a URL was passed via command line arguments (e.g. CLI launch or testing)
+        for arg in CommandLine.arguments.dropFirst() {
+            if arg.lowercased().hasPrefix("mailto:"), let url = URL(string: arg) {
+                handleMailto(url: url)
+                return
+            }
+        }
+
+        // Only activate UI when launched directly, not when invoked via URL dispatch
+        if !isHandlingURL && !isSettingsWindowOpen {
             handleWindowOpened()
         }
     }
@@ -31,11 +58,18 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let mailtoURL = urls.first(where: { $0.scheme?.lowercased() == "mailto" }) else {
             return
         }
-
         handleMailto(url: mailtoURL)
     }
 
     public func handleMailto(url: URL) {
+        // Deduplicate events delivered by both AppleEventManager and SwiftUI/AppKit
+        if url == lastHandledURL && Date().timeIntervalSince(lastHandledTime) < 1.0 {
+            return
+        }
+        lastHandledURL = url
+        lastHandledTime = Date()
+        isHandlingURL = true
+
         let msg = MailtoParser.parse(url)
         let routeResult = router.route(message: msg)
 
@@ -43,7 +77,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             Task { @MainActor in
                 guard let self = self else { return }
                 if LaunchContext.shouldTerminateAfterRouting(isSettingsWindowOpen: self.isSettingsWindowOpen) {
-                    NSApp.terminate(nil)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        NSApp.terminate(nil)
+                    }
                 }
             }
         }

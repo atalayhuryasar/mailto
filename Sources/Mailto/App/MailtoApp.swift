@@ -56,6 +56,9 @@ struct MailtoApp: App {
                         }
                 }
             }
+            .onOpenURL { url in
+                appDelegate.handleMailto(url: url)
+            }
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)

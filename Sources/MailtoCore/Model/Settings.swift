@@ -31,7 +31,7 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
         didSet { save() }
     }
 
-    public init(defaults: UserDefaults = .standard) {
+    public init(defaults: UserDefaults = UserDefaults(suiteName: "com.atalayhuryasar.mailto") ?? .standard) {
         self.defaults = defaults
 
         // Load primaryTarget
