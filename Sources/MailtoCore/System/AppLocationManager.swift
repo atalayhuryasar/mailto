@@ -27,6 +27,20 @@ public final class AppLocationManager: @unchecked Sendable {
     public func installApp(from sourceURL: URL, to destinationURL: URL, cleanSource: Bool = false) throws {
         try copyAppBundle(from: sourceURL, to: destinationURL)
         if cleanSource {
+            // If running from AppTranslocation, find original bundle in ~/Downloads
+            if sourceURL.path.contains("/AppTranslocation/") {
+                if let downloadsURL = fileManager.urls(for: .downloadsDirectory, in: .userDomainMask).first {
+                    let downloadApp = downloadsURL.appendingPathComponent(sourceURL.lastPathComponent)
+                    if fileManager.fileExists(atPath: downloadApp.path) {
+                        do {
+                            try fileManager.trashItem(at: downloadApp, resultingItemURL: nil)
+                        } catch {
+                            try? fileManager.removeItem(at: downloadApp)
+                        }
+                    }
+                }
+            }
+
             do {
                 try fileManager.trashItem(at: sourceURL, resultingItemURL: nil)
             } catch {
@@ -47,17 +61,11 @@ public final class AppLocationManager: @unchecked Sendable {
     /// Launches the app at destinationURL and terminates the calling application.
     @MainActor
     public func relaunchAndTerminate(at applicationURL: URL) {
-        let config = NSWorkspace.OpenConfiguration()
-        config.activates = true
-        config.createsNewApplicationInstance = true
-
-        NSWorkspace.shared.openApplication(at: applicationURL, configuration: config) { _, error in
-            Task { @MainActor in
-                if error == nil {
-                    NSApp.terminate(nil)
-                }
-            }
-        }
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        process.arguments = ["-n", applicationURL.path]
+        try? process.run()
+        NSApp.terminate(nil)
     }
 
     /// Checks the current running location against /Applications and prompts the user if needed.

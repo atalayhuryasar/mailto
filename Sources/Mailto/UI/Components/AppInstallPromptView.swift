@@ -3,15 +3,25 @@ import SwiftUI
 import MailtoCore
 
 public struct AppInstallPromptView: View {
-    public var onInstall: () -> Void
+    public let sourceURL: URL
+    public let destinationURL: URL
+    public var onInstalled: (() -> Void)?
     public var onSkip: () -> Void
 
     @State private var dragOffset: CGSize = .zero
     @State private var isTargetHovered: Bool = false
     @State private var isInstalling: Bool = false
+    @State private var errorMessage: String?
 
-    public init(onInstall: @escaping () -> Void, onSkip: @escaping () -> Void) {
-        self.onInstall = onInstall
+    public init(
+        sourceURL: URL,
+        destinationURL: URL,
+        onInstalled: (() -> Void)? = nil,
+        onSkip: @escaping () -> Void
+    ) {
+        self.sourceURL = sourceURL
+        self.destinationURL = destinationURL
+        self.onInstalled = onInstalled
         self.onSkip = onSkip
     }
 
@@ -43,29 +53,41 @@ public struct AppInstallPromptView: View {
                                 .frame(width: 68, height: 68)
                                 .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
                                 .shadow(color: .black.opacity(0.18), radius: dragOffset == .zero ? 4 : 12, y: dragOffset == .zero ? 2 : 6)
+                        } else {
+                            RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                .fill(Color.accentColor.opacity(0.15))
+                                .frame(width: 68, height: 68)
+                                .overlay(
+                                    Image(systemName: "envelope.fill")
+                                        .font(.system(size: 28))
+                                        .foregroundStyle(Color.accentColor)
+                                )
                         }
                     }
+                    .frame(width: 68, height: 68)
+                    .contentShape(Rectangle())
                     .offset(dragOffset)
                     .zIndex(1)
                     .gesture(
-                        DragGesture()
+                        DragGesture(minimumDistance: 2)
                             .onChanged { value in
-                                dragOffset = CGSize(width: max(-10, value.translation.width), height: value.translation.height)
-                                if dragOffset.width > 90 {
+                                dragOffset = CGSize(
+                                    width: max(-10, min(150, value.translation.width)),
+                                    height: value.translation.height * 0.2
+                                )
+                                if dragOffset.width > 65 {
                                     isTargetHovered = true
                                 } else {
                                     isTargetHovered = false
                                 }
                             }
                             .onEnded { value in
-                                if value.translation.width > 90 {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                if value.translation.width > 65 {
+                                    withAnimation(.spring(response: 0.25, dampingFraction: 0.7)) {
                                         dragOffset = CGSize(width: 140, height: 0)
                                     }
-                                    isInstalling = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                                        onInstall()
-                                    }
+                                    isTargetHovered = true
+                                    executeInstall()
                                 } else {
                                     withAnimation(.spring(response: 0.35, dampingFraction: 0.65)) {
                                         dragOffset = .zero
@@ -119,11 +141,18 @@ public struct AppInstallPromptView: View {
             }
             .padding(.vertical, 8)
 
+            if let error = errorMessage {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 10)
+            }
+
             // Actions
             VStack(spacing: 10) {
                 Button(action: {
-                    isInstalling = true
-                    onInstall()
+                    executeInstall()
                 }) {
                     HStack(spacing: 6) {
                         if isInstalling {
@@ -154,6 +183,25 @@ public struct AppInstallPromptView: View {
         .padding(.horizontal, 28)
         .padding(.vertical, 24)
         .frame(width: 380)
+        .onAppear {
+            NSApp.setActivationPolicy(.regular)
+            NSApp.activate(ignoringOtherApps: true)
+        }
+    }
+
+    private func executeInstall() {
+        isInstalling = true
+        errorMessage = nil
+        let manager = AppLocationManager()
+        do {
+            try manager.installApp(from: sourceURL, to: destinationURL, cleanSource: true)
+            manager.stripQuarantine(at: destinationURL)
+            onInstalled?()
+            manager.relaunchAndTerminate(at: destinationURL)
+        } catch {
+            isInstalling = false
+            errorMessage = error.localizedDescription
+        }
     }
 }
 
@@ -170,33 +218,18 @@ public enum AppInstallPresenter {
         )
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
-        window.isMovableByWindowBackground = true
         window.isReleasedWhenClosed = false
         window.standardWindowButton(.closeButton)?.isHidden = true
         window.standardWindowButton(.miniaturizeButton)?.isHidden = true
         window.standardWindowButton(.zoomButton)?.isHidden = true
 
         let view = AppInstallPromptView(
-            onInstall: {
-                let manager = AppLocationManager()
-                do {
-                    try manager.installApp(from: sourceURL, to: destinationURL, cleanSource: true)
-                    manager.stripQuarantine(at: destinationURL)
-                    didInstall = true
-                    NSApp.stopModal()
-                    window.close()
-                    manager.relaunchAndTerminate(at: destinationURL)
-                } catch {
-                    NSApp.stopModal()
-                    window.close()
-                    CustomAlertPresenter.show(
-                        iconSystemName: "exclamationmark.triangle.fill",
-                        iconColor: .red,
-                        title: "Failed to Move Application",
-                        message: error.localizedDescription,
-                        actions: [AlertActionItem(title: "OK", isPrimary: true, action: {})]
-                    )
-                }
+            sourceURL: sourceURL,
+            destinationURL: destinationURL,
+            onInstalled: {
+                didInstall = true
+                NSApp.stopModal()
+                window.close()
             },
             onSkip: {
                 NSApp.stopModal()
@@ -210,6 +243,7 @@ public enum AppInstallPresenter {
         window.setContentSize(NSSize(width: 380, height: fit.height))
         window.center()
         window.makeKeyAndOrderFront(nil)
+        NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
 
         NSApp.runModal(for: window)
