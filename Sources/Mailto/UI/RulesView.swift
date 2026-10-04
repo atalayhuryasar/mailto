@@ -27,8 +27,9 @@ public struct RulesView: View {
                             .foregroundStyle(.tertiary)
                             .multilineTextAlignment(.center)
                     }
-                    .frame(maxWidth: .infinity, minHeight: 180)
-                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 28)
+                    .padding(.horizontal, 16)
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
@@ -54,7 +55,7 @@ public struct RulesView: View {
                             }
                         }
                     }
-                    .frame(minHeight: 180, maxHeight: 220)
+                    .frame(minHeight: 120, maxHeight: 180)
                 }
 
                 Divider()

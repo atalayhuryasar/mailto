@@ -28,7 +28,7 @@ public struct RootView: View {
                 mainContent
             }
         }
-        .frame(width: 560, height: showOnboarding ? 360 : 320)
+        .frame(width: 560, height: 360)
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear {
             if !settings.hasCompletedOnboarding {
@@ -54,21 +54,26 @@ public struct RootView: View {
                 )
             }
             .padding(.top, 12)
-            .padding(.bottom, 14)
+            .padding(.bottom, 12)
+            .fixedSize(horizontal: false, vertical: true)
 
             Divider()
 
             // Tab Content
-            switch selectedTab {
-            case .general:
-                GeneralView(settings: settings) {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        showOnboarding = true
+            ZStack(alignment: .top) {
+                if selectedTab == .general {
+                    GeneralView(settings: settings) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showOnboarding = true
+                        }
                     }
+                    .transition(.opacity)
+                } else {
+                    RulesView(settings: settings)
+                        .transition(.opacity)
                 }
-            case .rules:
-                RulesView(settings: settings)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .navigationTitle(selectedTab.rawValue)
     }
