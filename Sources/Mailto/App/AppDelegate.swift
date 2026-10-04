@@ -17,9 +17,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
-        // If launched normally (not via URL/event) and no window visible, show settings
-        if !isSettingsWindowOpen && NSApp.windows.filter({ $0.isVisible }).isEmpty {
-            openSettingsWindow()
+        // When launched directly (not via mailto: URL dispatch), activate UI immediately
+        if !isSettingsWindowOpen {
+            handleWindowOpened()
         }
     }
 
@@ -49,18 +49,17 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    public func openSettingsWindow() {
+    public func handleWindowOpened() {
         // Check installation location and prompt user if needed (e.g. AppTranslocation or duplicate install)
         if AppLocationManager().promptAndHandleIfNeeded() {
             return
         }
 
-        // Dynamically elevate to regular foreground application so system menu bar & Dock are active
+        isSettingsWindowOpen = true
         NSApp.setActivationPolicy(.regular)
         setupMenuBar()
-
-        isSettingsWindowOpen = true
         NSApp.activate(ignoringOtherApps: true)
+
         if let existing = NSApp.windows.first(where: { $0.title == "General" || $0.title == "Rules" || $0.title == "mailto:" }) {
             existing.makeKeyAndOrderFront(nil)
         }
@@ -73,12 +72,17 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    public func openSettingsWindow() {
+        handleWindowOpened()
+    }
+
+    public func handleWindowClosed() {
+        isSettingsWindowOpen = false
+        NSApp.terminate(nil)
+    }
+
     // MARK: - Native Menu Bar Setup
     public func setupMenuBar() {
-        if NSApp.mainMenu != nil && !(NSApp.mainMenu?.items.isEmpty ?? true) {
-            return
-        }
-
         let mainMenu = NSMenu()
 
         // 1. Application Menu ("mailto:")

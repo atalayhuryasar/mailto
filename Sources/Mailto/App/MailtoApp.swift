@@ -10,13 +10,34 @@ struct MailtoApp: App {
         Window("mailto:", id: "settings") {
             RootView(settings: appDelegate.settings)
                 .onAppear {
-                    appDelegate.isSettingsWindowOpen = true
+                    appDelegate.handleWindowOpened()
                 }
                 .onDisappear {
-                    appDelegate.isSettingsWindowOpen = false
+                    appDelegate.handleWindowClosed()
                 }
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
+        .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About mailto:") {
+                    NSApp.orderFrontStandardAboutPanel(nil)
+                }
+                Button("Check for Updates...") {
+                    appDelegate.handleCheckForUpdatesMenu()
+                }
+            }
+            CommandGroup(replacing: .appSettings) {
+                Button("Settings...") {
+                    appDelegate.openSettingsWindow()
+                }
+                .keyboardShortcut(",", modifiers: .command)
+            }
+            CommandGroup(replacing: .help) {
+                Button("mailto: Website & Documentation") {
+                    appDelegate.handleOpenHelpMenu()
+                }
+            }
+        }
     }
 }

@@ -2,5 +2,5 @@ import Testing
 @testable import MailtoCore
 
 @Test func testPackageInit() {
-    #expect(MailtoCoreVersion == "1.2.0")
+    #expect(MailtoCoreVersion == "1.2.1")
 }
