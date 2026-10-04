@@ -35,4 +35,8 @@ codesign --force --deep --sign - --entitlements "$ROOT_DIR/Resources/mailto.enti
 echo "=== 4. Registering with LaunchServices ==="
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$APP_BUNDLE"
 
+echo "=== 5. Creating Distribution Archive ==="
+(cd "$ROOT_DIR/build" && rm -f mailto.zip && zip -r -y -q -X mailto.zip "mailto:.app")
+echo "Archive created: $ROOT_DIR/build/mailto.zip"
+
 echo "=== Build & Registration Complete: $APP_BUNDLE ==="
